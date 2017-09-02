@@ -1,0 +1,17 @@
+{
+  "name": "ZLX WebTorrent Player",
+  "version": "0.0.1",
+  "description": "A player based on VideoJS with support to quality switching using WebTorrents to take advantage of P2P in the web, and Video Ads with Google IMA",
+  "main": "index.js",
+  "dependencies": {
+    "video.js": "^5.19.2",
+    "videojs-ima": "https://github.com/aledefreitas/videojs-ima/tarball/fix-ima-not-set-browserify",
+    "videojs-resolution-switcher": "https://github.com/aledefreitas/videojs-resolution-switcher/tarball/master",
+    "webtorrent": "^0.98.19"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Alexandre de Freitas Caetano <https://github.com/aledefreitas>",
+  "license": "ISC"
+}
