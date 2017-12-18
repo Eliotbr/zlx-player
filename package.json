@@ -9,7 +9,7 @@
     "webtorrent": "^0.98.19"
   },
   "scripts": {
-    "build": "browserify index.js | uglifyjs --mangle | babel -o ./dist/zlxplayer.min.js --presets=es2015"
+    "build": "browserify index.js | uglifyjs | babel -o ./dist/zlxplayer.min.js --presets=es2015"
   },
   "author": "Alexandre de Freitas Caetano <https://github.com/aledefreitas>",
   "license": "ISC",
