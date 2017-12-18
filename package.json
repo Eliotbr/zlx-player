@@ -1,8 +1,7 @@
 {
-  "name": "ZLX WebTorrent Player",
-  "version": "0.0.1",
+  "name": "zlx-player",
+  "version": "1.0.0",
   "description": "A player based on VideoJS with support to quality switching using WebTorrents to take advantage of P2P in the web, and Video Ads with Google IMA",
-  "main": "index.js",
   "dependencies": {
     "video.js": "^5.19.2",
     "videojs-ima": "https://github.com/aledefreitas/videojs-ima/tarball/fix-ima-not-set-browserify",
@@ -10,8 +9,14 @@
     "webtorrent": "^0.98.19"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "build": "browserify index.js | uglifyjs --mangle | babel -o ./dist/zlxplayer.min.js --presets=es2015",
   },
   "author": "Alexandre de Freitas Caetano <https://github.com/aledefreitas>",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-preset-es2015": "^6.24.1",
+    "browserify": "^14.5.0",
+    "uglifyjs": "^2.4.11"
+  }
 }
