@@ -127,30 +127,46 @@
             'adLabel': this.opts.adLabel
         };
 
-        if(options.adTagUrl) {
+        var supportsES6 = function() {
+          try {
+            new Function("(a = 0) => a");
+            return true;
+          }
+          catch (err) {
+            return false;
+          }
+        }();
+
+        if(options.adTagUrl && supportsES6 === true) {
             videojs.Html5 = videojs.getComponent('Html5');
             this.player.ima(options);
 
-            var contentPlayer =  document.getElementById('content_video_html5_api');
-
-            if((navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/Android/i)) && contentPlayer.hasAttribute('controls')) {
-                contentPlayer.removeAttribute('controls');
+            var startEvent = 'click';
+            if(navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/Android/i)) {
+                startEvent = 'touchend';
             }
 
-            if(this.player.autoplay() !== true) {
-                var startEvent = 'click';
-                if(navigator.userAgent.match(/iPhone/i) || navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/Android/i)) {
-                    startEvent = 'touchend';
+            var contentPlayer =  document.getElementById(this._playerElement + '_html5_api');
+
+            if(contentPlayer) {
+                if((navigator.userAgent.match(/iPad/i) || navigator.userAgent.match(/Android/i)) && contentPlayer.hasAttribute('controls')) {
+                    contentPlayer.removeAttribute('controls');
                 }
 
+                if(this.player.autoplay() !== true) {
+                    this.player.one(startEvent, function() {
+                        self.player.ima.initializeAdDisplayContainer();
+                        self.player.ima.requestAds();
+                        self.player.play();
+                    });
+                } else {
+                    this.player.ima.initializeAdDisplayContainer();
+                    this.player.ima.requestAds();
+                }
+            } else {
                 this.player.one(startEvent, function() {
-                    self.player.ima.initializeAdDisplayContainer();
-                    self.player.ima.requestAds();
                     self.player.play();
                 });
-            } else {
-                this.player.ima.initializeAdDisplayContainer();
-                this.player.ima.requestAds();
             }
         }
     };

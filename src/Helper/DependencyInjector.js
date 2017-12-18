@@ -18,7 +18,7 @@
 var DependencyInjector = function DependencyInjector(videojs) {
     this._videojs = videojs;
     this._scripts = [
-        { url: "https://imasdk.googleapis.com/js/sdkloader/ima3.js", required: false }
+        { url: "//imasdk.googleapis.com/js/sdkloader/ima3.js", required: false }
     ];
 };
 
