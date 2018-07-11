@@ -16,6 +16,7 @@
     var videojs = require("video.js");
     var DependencyInjector = require("./src/Helper/DependencyInjector.js");
     var VideoTorrent = require("./src/Helper/VideoTorrent.js");
+    var WebTorrent = require("webtorrent");
 
     /**
      * ZLX Player constructor
@@ -30,6 +31,7 @@
         var self = this;
 
         this._playerElement = player_element;
+        this._playerElementDOM = document.getElementById(player_element);
         this.dependencyInjector = new DependencyInjector(videojs);
         this.VideoTorrent = new VideoTorrent();
 
@@ -94,6 +96,8 @@
 
         return new Promise(function(resolve, reject) {
             var _configs = self._configPlayer();
+            var client = new WebTorrent();
+
             var _player = videojs(self._playerElement, _configs, function() {
                 var _sources = self.opts.sources || {};
                 var player_srcs = [];
@@ -230,15 +234,24 @@
                 throw("No magnet link to Quality " + label + ". Falling back to Server only.");
             }
 
-            this.VideoTorrent.change(_source.magnet).then(function(file) {
-                file.renderTo(self._playerElement, {
+            this.VideoTorrent.change(_source.magnet).then(function(torrent) {
+                var file = torrent.files.find(function(file) {
+                    return file.name.endsWith('.mp4')
+                });
+
+                file.renderTo(self._playerElementDOM, {
                     "autoplay": self.opts.autoplay
                 });
             }).catch(function(e) {
+                console.log(e);
+                console.log('Falling back to server');
+
                 self._fallbackToServer(player, _source.src, _source.type);
             });
         } catch(e) {
             console.log(e);
+            console.log('Falling back to server');
+
             this._fallbackToServer(player, _source.src, _source.type);
         }
 

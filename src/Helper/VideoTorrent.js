@@ -51,8 +51,10 @@ VideoTorrent.prototype.change = function change(magnet_url) {
     return this.destroy().then(function() {
         self.torrent = new WebTorrent();
 
-        return self.torrent.add(magnet_url, function(file) {
-            return file;
+        return new Promise(function(resolve, reject) {
+            self.torrent.add(magnet_url, function(torrent) {
+                resolve(torrent);
+            });
         });
     });
 };
