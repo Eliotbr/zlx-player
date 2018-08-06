@@ -224,9 +224,8 @@
             'type': type
         });
 
-        player.on('error', function() {
+        player.one('error', function() {
             var error = player.error();
-
             switch(error.code) {
                 case 2:
                 case 4:
