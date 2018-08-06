@@ -5,14 +5,20 @@
     </head>
     <body>
         <video id="my-player" class="video-js"></video>
-        <script src="../dist/zlxplayer.min.js"></script>
+        <script src="../dist/zlx.player.js"></script>
         <script>
             var ZLXSources = {
-                "fullhd": {
-                    "src": "http://cache-vip1.punchsub.net/fullhd/PUNCH_The_Reflection_-_04_FullHD.mp4",
-                    "type": "video/mp4",
-                    "magnet": "magnet:?xt=urn:btih:RLG45RONDDUDLWRERL76SM6JQ72BW7SC&dn=PUNCH_The_Reflection_-_04_FullHD.mp4&xl=204311561&tr=wss%3A%2F%2Ftracker.btorrent.xyz&xs=https://stream-st1.punchsub.net/torrents/fullhd/PUNCH_The_Reflection_-_04_FullHD.mp4.torrent&ws=http://cache-vip1.punchsub.net/fullhd/PUNCH_The_Reflection_-_04_FullHD.mp4",
-                },
+                'fullhd': [
+                    {
+                        'type': 'application/x-mpegURL',
+                        'src': 'https://playlist.animesyncvideo-akamai.tk/id/R1pUTFpFbVhJQ0t4ODdCVTBiaXoxVjVWNVF0a20vN2oyMW9Rd1djVEpxTlIrUGVLcDhwbmpLQnN2RzJTR2lxckg2OHpuQTJPTzcxNzdaUDdlRHdoU1pSQ1lybjdxcHA0QzJaUjJjS1ViVGQrem9GYkdyMlR4K1Z4MHRqbHZ4WWk=.m3u8'
+                    },
+                    {
+                        "src": "http://conpos-dev.zlx.com.br/example/video/video-anime.mp4",
+                        "type": "video/mp4",
+                        "magnet": "magnet:?xt=urn:btih:RLG45RONDDUDLWRERL76SM6JQ72BW7SC&dn=PUNCH_The_Reflection_-_04_FullHD.mp4&xl=204311561&tr=wss%3A%2F%2Ftracker.btorrent.xyz&xs=https://stream-st1.punchsub.net/torrents/fullhd/PUNCH_The_Reflection_-_04_FullHD.mp4.torrent&ws=http://cache-vip1.punchsub.net/fullhd/PUNCH_The_Reflection_-_04_FullHD.mp4",
+                    }
+                ],
                 "hd": {
                     "src": "http://cache-vip1.punchsub.net/hd/PUNCH_The_Reflection_-_04_HD.mp4",
                     "type": "video/mp4",
@@ -33,17 +39,19 @@
             new ZLXPlayer("my-player", {
                 'autoplay': false, // optional. Defaults to: true
                 'controls': true, // optional. Defaults to: true
-                'prefer_quality': 'low', // optional. Defaults to: high
+                'prefer_quality': 'high', // optional. Defaults to: high
                 'adTagUrl': 'http://pubads.g.doubleclick.net/gampad/ads?sz=640x480&' +
                     'iu=/124319096/external/ad_rule_samples&ciu_szs=300x250&ad_rule=1&' +
                     'impl=s&gdfp_req=1&env=vp&output=xml_vmap1&unviewed_position_start=1&' +
                     'cust_params=sample_ar%3Dpremidpostpod%26deployment%3Dgmf-js&cmsid=496&' +
                     'vid=short_onecue&correlator=', // optional
                 'adLabel': "Publicidade", // optional. Defaults to: Advertising
-                'sources': ZLXSources // required
+                'sources': ZLXSources,// required
+                //'use_torrent': false
             }, function(player) {
 
             });
         </script>
+        <script src="https://unpkg.com/videojs-contrib-hls/dist/videojs-contrib-hls.js"></script>
     </body>
 </html>

@@ -45,6 +45,7 @@
                 "adTagUrl": null,
                 // adLabel used on IMA
                 "adLabel": "Advertising",
+                "use_torrent": true,
             };
 
             this._loadOptions(opts);
@@ -103,11 +104,23 @@
                 var player_srcs = [];
 
                 for(var quality in _sources) {
-                    player_srcs.push({
-                        "label": quality.toUpperCase(),
-                        "src": _sources[quality].src,
-                        "type": _sources[quality].type
-                    });
+                    if(Array.isArray(_sources[quality])) {
+                        for(var src in _sources[quality]) {
+                            player_srcs.push({
+                                'label': quality.toUpperCase(),
+                                'src': _sources[quality][src].src,
+                                'type': _sources[quality][src].type,
+                                'magnet': _sources[quality][src].magnet
+                            });
+                        }
+                    } else {
+                        player_srcs.push({
+                            "label": quality.toUpperCase(),
+                            "src": _sources[quality].src,
+                            "type": _sources[quality].type,
+                            'magnet': _sources[quality].magnet
+                        });
+                    }
                 }
 
                 _player.updateSrc(player_srcs);
@@ -189,9 +202,7 @@
             "default": this.opts.prefer_quality
         };
 
-        if(this.VideoTorrent.isSupported()) {
-            qualitySwitcherConfig['customSourcePicker'] = this._customSourcePicker.bind(this);
-        }
+        qualitySwitcherConfig['customSourcePicker'] = this._customSourcePicker.bind(this);
 
         this._config.plugins['videoJsResolutionSwitcher'] = qualitySwitcherConfig;
 
@@ -212,6 +223,29 @@
             'src': source,
             'type': type
         });
+
+        player.on('error', function() {
+            var error = player.error();
+
+            switch(error.code) {
+                case 2:
+                case 4:
+                    var currentResolution = player.currentResolution();
+                    var sources = currentResolution.sources;
+
+                    for(var i = 0; i < sources.length - 1; i++) {
+                        if(sources[i].src === source && sources[i+1]) {
+                            var nextSource = sources[i+1];
+                            return this._customSourcePicker(player, nextSource, currentResolution.label, false);
+                        }
+                    }
+                break;
+
+                default:
+                    return;
+                break;
+            }
+        }.bind(this));
     };
 
     /**
@@ -228,10 +262,24 @@
         var self = this;
 
         try {
-            var _source = this.opts.sources[label.toLowerCase()];
+            var _source = {};
+
+            if(Array.isArray(sources)) {
+                _source = sources[0];
+            } else {
+                _source = sources;
+            }
+
+            if(this.opts.use_torrent === false) {
+                throw("WebTorrent usage is disabled. Falling back to server.");
+            }
+
+            if(!this.VideoTorrent.isSupported()) {
+                throw("WebTorrent is not supported. Falling back to server only.")
+            }
 
             if(!_source.magnet) {
-                throw("No magnet link to Quality " + label + ". Falling back to Server only.");
+                throw("No magnet link to Quality " + label + " and Source "+_source.src+". Falling back to Server only.");
             }
 
             this.VideoTorrent.change(_source.magnet).then(function(torrent) {
